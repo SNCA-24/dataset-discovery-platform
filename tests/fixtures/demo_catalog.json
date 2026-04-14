@@ -1,0 +1,77 @@
+{
+  "datasets": [
+    {
+      "id": "acme/text-classification-demo",
+      "source": "hf",
+      "ns_local_id": "text-classification-demo",
+      "title": "Text Classification Demo Dataset",
+      "description": "Small labeled text dataset for sentiment and topic classification demos.",
+      "readme_text": "# Text Classification Demo\nA compact benchmark for text classification, sentiment labeling, and search demos.",
+      "tags": ["task:text-classification", "license:mit", "language:en"],
+      "modalities": ["text"],
+      "license_class": "mit",
+      "access_class": "public",
+      "size_class": "1K<n<10K",
+      "languages": ["en"],
+      "quality_signals": {
+        "downloads": 1234,
+        "likes": 42
+      }
+    },
+    {
+      "id": "acme/fraud-detection-demo",
+      "source": "hf",
+      "ns_local_id": "fraud-detection-demo",
+      "title": "Fraud Detection Demo Dataset",
+      "description": "Small tabular fraud detection dataset with transaction labels.",
+      "readme_text": "# Fraud Detection Demo\nA compact fraud detection dataset for local discovery and schema previews.",
+      "tags": ["task:tabular-classification", "domain:finance", "license:apache-2.0"],
+      "modalities": ["tabular"],
+      "license_class": "apache-2.0",
+      "access_class": "public",
+      "size_class": "10K<n<100K",
+      "languages": ["en"],
+      "quality_signals": {
+        "downloads": 860,
+        "likes": 19
+      }
+    },
+    {
+      "id": "acme/image-caption-demo",
+      "source": "hf",
+      "ns_local_id": "image-caption-demo",
+      "title": "Image Caption Demo Dataset",
+      "description": "Small multimodal dataset pairing images with captions.",
+      "readme_text": "# Image Caption Demo\nA tiny image caption benchmark for discovery and UI filtering demos.",
+      "tags": ["task:image-captioning", "license:cc-by-4.0", "language:en"],
+      "modalities": ["image", "text"],
+      "license_class": "cc-by-4.0",
+      "access_class": "public",
+      "size_class": "1K<n<10K",
+      "languages": ["en"],
+      "quality_signals": {
+        "downloads": 640,
+        "likes": 11
+      }
+    }
+  ],
+  "artifacts": [
+    {
+      "dataset_id": "acme/text-classification-demo",
+      "kind": "schema",
+      "payload": {
+        "dataset_id": "acme/text-classification-demo",
+        "kind": "schema",
+        "source": "fixture",
+        "row_cap_applied": 50,
+        "fetched_ms": 12,
+        "budget_ms_requested": 1500,
+        "budget_exhausted": false,
+        "schema": [
+          {"name": "text", "dtype": "string", "nullable": false},
+          {"name": "label", "dtype": "string", "nullable": false}
+        ]
+      }
+    }
+  ]
+}

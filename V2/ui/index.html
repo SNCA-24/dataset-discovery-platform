@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dataset Discovery Platform</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card: #111827;
+      --accent: #22d3ee;
+      --text: #e2e8f0;
+      --muted: #94a3b8;
+      --cold: #475569;
+      --resolving: #f59e0b;
+      --ready: #10b981;
+      --error: #ef4444;
+      --font: "Space Grotesk", "Inter", system-ui, -apple-system, sans-serif;
+    }
+    body {
+      margin: 0;
+      font-family: var(--font);
+      background: radial-gradient(circle at 20% 20%, #1f2937, var(--bg));
+      color: var(--text);
+      min-height: 100vh;
+      padding: 32px;
+    }
+    .app-shell {
+      max-width: 1120px;
+      margin: 0 auto;
+    }
+    h1 {
+      margin: 0 0 16px 0;
+      letter-spacing: -0.02em;
+    }
+    .controls {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    input, button {
+      font-family: var(--font);
+    }
+    input[type="text"] {
+      flex: 1;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid #1e293b;
+      background: #0b1220;
+      color: var(--text);
+    }
+    button {
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: none;
+      background: var(--accent);
+      color: #0b1220;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 120ms ease, box-shadow 120ms ease;
+    }
+    button:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 8px 24px rgba(34, 211, 238, 0.15);
+    }
+    .grid {
+      display: grid;
+      gap: 12px;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    }
+    .card {
+      background: var(--card);
+      border: 1px solid #1e293b;
+      border-radius: 14px;
+      padding: 14px 14px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .title {
+      font-weight: 700;
+      font-size: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      word-break: break-word;
+      line-height: 1.2;
+    }
+    .desc {
+      color: var(--muted);
+      font-size: 14px;
+      min-height: 40px;
+    }
+    .row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .badge {
+      padding: 4px 8px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      background: var(--cold);
+      color: #0b1220;
+    }
+    .state-cold { background: var(--cold); color: #cbd5e1; }
+    .state-resolving { background: var(--resolving); color: #0f172a; }
+    .state-ready { background: var(--ready); color: #0f172a; }
+    .state-error { background: var(--error); color: #0f172a; }
+    .schema {
+      font-size: 12px;
+      color: var(--muted);
+      background: #0c1425;
+      border-radius: 8px;
+      padding: 8px;
+      white-space: pre-wrap;
+      border: 1px solid #1f2937;
+    }
+    .panel {
+      background: #0c1425;
+      border: 1px solid #1e293b;
+      border-radius: 12px;
+      padding: 10px 12px;
+      margin-bottom: 10px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+    .panel strong {
+      color: var(--text);
+    }
+    .legend-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 4px;
+    }
+    .filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 12px;
+      align-items: center;
+    }
+    .filters select,
+    .filters button {
+      padding: 8px 10px;
+      border-radius: 8px;
+      border: 1px solid #1e293b;
+      background: #020617;
+      color: var(--text);
+      font-size: 13px;
+    }
+    .filters button {
+      border: none;
+      font-weight: 600;
+      background: #22d3ee;
+      color: #0b1220;
+      cursor: pointer;
+    }
+    .filters button#reset-filters {
+      background: #334155;
+      color: #e2e8f0;
+    }
+  </style>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="app-shell">
+    <h1>Dataset Discovery Platform</h1>
+    <div class="controls">
+      <input id="query" type="text" placeholder="Search datasets…" value="text classification" />
+      <button id="search-btn">Search</button>
+      <button id="refresh-admin" style="background:#1d4ed8;color:#e2e8f0;">Metrics</button>
+    </div>
+    <div class="filters">
+      <select id="filter-license"><option value="">License</option></select>
+      <select id="filter-modality"><option value="">Modality</option></select>
+      <select id="filter-language"><option value="">Language</option></select>
+      <select id="filter-size"><option value="">Size class</option></select>
+      <button id="apply-filters" style="background:#22d3ee;color:#0b1220;">Apply</button>
+      <button id="reset-filters" style="background:#334155;color:#e2e8f0;">Reset</button>
+    </div>
+    <div id="status" class="desc" style="margin-bottom:8px;"></div>
+    <div id="admin" class="panel"></div>
+    <div id="ops" class="panel"></div>
+    <div id="legend" class="panel">
+      <strong>Legend:</strong>
+      <div class="legend-row">
+        <span class="badge state-cold">cold</span>
+        <span>idle</span>
+      </div>
+      <div class="legend-row">
+        <span class="badge state-resolving">resolving</span>
+        <span>in progress</span>
+      </div>
+      <div class="legend-row">
+        <span class="badge state-ready">ready</span>
+        <span>schema cached</span>
+      </div>
+      <div class="legend-row">
+        <span class="badge state-error">blocked/error</span>
+        <span>policy or timeout</span>
+      </div>
+      <div style="margin-top:8px;">
+        Resolve fetches schema on demand; blocked = gated/private or license/size.
+      </div>
+    </div>
+    <div id="pager" class="desc"></div>
+    <div id="results" class="grid"></div>
+  </div>
+
+  <script>
+    const apiBase = (window.API_BASE || "http://127.0.0.1:8000") + "/v2";
+    const resultsEl = document.getElementById("results");
+    const statusEl = document.getElementById("status");
+    const adminEl = document.getElementById("admin");
+    const opsEl = document.getElementById("ops");
+    const pagerEl = document.getElementById("pager");
+
+    let state = {
+      query: document.getElementById("query").value.trim(),
+      limit: 15,
+      offset: 0,
+      total: 0,
+      filters: {}
+    };
+
+    const queryInput = document.getElementById("query");
+
+    document.getElementById("search-btn").addEventListener("click", () => {
+      state.query = queryInput.value.trim();
+      state.offset = 0;
+      applyFiltersFromUI();
+      search();
+    });
+    queryInput.addEventListener("keydown", (ev) => {
+      if (ev.key === "Enter") {
+        ev.preventDefault();
+        state.query = queryInput.value.trim();
+        state.offset = 0;
+        applyFiltersFromUI();
+        search();
+      }
+    });
+    document.getElementById("refresh-admin").addEventListener("click", () => loadAdmin());
+    document.getElementById("apply-filters").addEventListener("click", () => {
+      applyFiltersFromUI();
+      state.offset = 0;
+      search();
+    });
+    document.getElementById("reset-filters").addEventListener("click", () => {
+      document.getElementById("filter-license").value = "";
+      document.getElementById("filter-modality").value = "";
+      document.getElementById("filter-language").value = "";
+      document.getElementById("filter-size").value = "";
+      state.filters = {};
+      state.offset = 0;
+      search();
+    });
+
+    function applyFiltersFromUI() {
+      const f = {};
+      const licenseVal = document.getElementById("filter-license").value;
+      const modalityVal = document.getElementById("filter-modality").value;
+      const langVal = document.getElementById("filter-language").value;
+      const sizeVal = document.getElementById("filter-size").value;
+      if (licenseVal) f.license_class = licenseVal;
+      if (modalityVal) f.modality = modalityVal;
+      if (langVal) f.language = langVal;
+      if (sizeVal) f.size_class = sizeVal;
+      state.filters = f;
+    }
+
+    function populateFilters(hits) {
+      const licenses = new Set();
+      const modalities = new Set();
+      const languages = new Set();
+      const sizes = new Set();
+      hits.forEach((h) => {
+        if (h.license_class) licenses.add(h.license_class);
+        (h.modalities || []).forEach((m) => modalities.add(m));
+        (h.languages || []).forEach((l) => languages.add(l));
+        if (h.size_class) sizes.add(h.size_class);
+      });
+      // Static fallbacks so filters remain useful even when metadata is sparse
+      if (licenses.size === 0) {
+        ["apache-2.0", "mit", "bsd-3-clause", "cc-by-4.0", "cc-by-sa-4.0", "cc0-1.0"].forEach((v) => licenses.add(v));
+      }
+      if (modalities.size === 0) {
+        ["text", "image", "audio", "tabular"].forEach((v) => modalities.add(v));
+      }
+      if (languages.size === 0) {
+        ["en", "de", "fr", "es", "zh"].forEach((v) => languages.add(v));
+      }
+      if (sizes.size === 0) {
+        ["n<1K", "1K<n<10K", "10K<n<100K", "100K<n<1M", "1M<n<10M", "10M<n<100M", "n>100M"].forEach((v) => sizes.add(v));
+      }
+      const prettySizeLabel = (v) => {
+        const mapping = {
+          "n<1K": "< 1K rows",
+          "1K<n<10K": "1K–10K rows",
+          "10K<n<100K": "10K–100K rows",
+          "100K<n<1M": "100K–1M rows",
+          "1M<n<10M": "1M–10M rows",
+          "10M<n<100M": "10M–100M rows",
+          "n>100M": "> 100M rows",
+        };
+        return mapping[v] || v;
+      };
+      const setOptions = (id, values) => {
+        const sel = document.getElementById(id);
+        const current = sel.value;
+        const opts = [`<option value="">${sel.options[0].text || sel.getAttribute("data-label") || "Any"}</option>`];
+        Array.from(values)
+          .sort()
+          .forEach((v) => {
+            const label = id === "filter-size" ? prettySizeLabel(v) : v;
+            opts.push(`<option value="${v}">${label}</option>`);
+          });
+        sel.innerHTML = opts.join("");
+        if (current) sel.value = current;
+      };
+      setOptions("filter-license", licenses);
+      setOptions("filter-modality", modalities);
+      setOptions("filter-language", languages);
+      setOptions("filter-size", sizes);
+    }
+
+    async function search() {
+      resultsEl.innerHTML = "";
+      statusEl.innerHTML = "Searching…";
+      adminEl.innerHTML = "";
+      try {
+        const resp = await fetch(`${apiBase}/search_index`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            query: state.query,
+            limit: state.limit,
+            offset: state.offset,
+            filters: state.filters
+          })
+        });
+        const data = await resp.json();
+        state.total = data.total;
+        const hits = data.hits || [];
+        const pageCount = hits.length;
+        let withDesc = 0;
+        let withReadme = 0;
+        let publicCount = 0;
+        let gatedCount = 0;
+        let withSchema = 0;
+        hits.forEach((h) => {
+          if (h.description) withDesc += 1;
+          if (h.readme_text) withReadme += 1;
+          if (h.access_class === "public") publicCount += 1;
+          if (h.access_class && h.access_class !== "public") gatedCount += 1;
+          if (h.has_schema) withSchema += 1;
+        });
+        const statsLine =
+          `(this page: ${pageCount}, public: ${publicCount}, gated/blocked: ${gatedCount}, ` +
+          `with description: ${withDesc}, with README text: ${withReadme}, with schema cached: ${withSchema})`;
+        statusEl.innerHTML =
+          `Found <strong>${data.total}</strong> result(s).` +
+          `<br/><span style="font-size:13px;color:#94a3b8;">${statsLine}</span>`;
+        renderPager();
+        hits.forEach(renderHit);
+        populateFilters(hits);
+        if (data.total === 0) {
+          resultsEl.innerHTML = "<div class='panel'>No results. Try a simpler query (e.g., a single keyword) or adjust filters.</div>";
+        }
+      } catch (err) {
+        statusEl.innerHTML = `<span style="color:#ef4444;">Search failed:</span> ${err}`;
+        resultsEl.innerHTML = "<div class='panel'>Check API availability/CORS and retry.</div>";
+        pagerEl.textContent = "";
+      }
+    }
+
+    function renderPager() {
+      if (state.total === 0) {
+        pagerEl.textContent = "No results.";
+        return;
+      }
+      const start = state.offset + 1;
+      const end = Math.min(state.offset + state.limit, state.total);
+      pagerEl.innerHTML = `
+        Showing ${start}-${end} of ${state.total}
+        <button id="prev-page" ${state.offset === 0 ? "disabled" : ""}>Prev</button>
+        <button id="next-page" ${end >= state.total ? "disabled" : ""}>Next</button>
+      `;
+      document.getElementById("prev-page").onclick = () => {
+        if (state.offset === 0) return;
+        state.offset = Math.max(0, state.offset - state.limit);
+        search();
+      };
+      document.getElementById("next-page").onclick = () => {
+        if (state.offset + state.limit >= state.total) return;
+        state.offset += state.limit;
+        search();
+      };
+    }
+    async function loadAdmin() {
+      adminEl.innerHTML = "Loading system metrics…";
+      try {
+        const resp = await fetch(`${apiBase}/admin`);
+        const data = await resp.json();
+        const jobStates = data.jobs_by_state || {};
+        const jobSummary = Object.keys(jobStates).length
+          ? `<div>Jobs — ${Object.entries(jobStates).map(([k, v]) => `${k}:${v}`).join(", ")}</div>`
+          : "";
+        const errors = data.error_taxonomy || {};
+        const errorSummary = Object.keys(errors).length
+          ? `<div>Errors — ${Object.entries(errors).map(([k, v]) => `${k}:${v}`).join(", ")}</div>`
+          : "";
+        adminEl.innerHTML = `
+          <div><strong>System metrics</strong></div>
+          <div>Freshness ${data.freshness_pct.toFixed(1)}% • Thin/no-README ${data.thin_readme_pct.toFixed(1)}%</div>
+          <div>Public schema coverage ${data.public_with_schema_pct.toFixed(1)}% (gap ${data.public_no_schema_count})</div>
+          <div>Resolve p95 ${data.resolve_p95_ms.toFixed(0)} ms • Queue ${data.queue_depth} • Prefetch ${data.prefetch_paused ? "paused (" + data.prefetch_reason + ")" : "on"}</div>
+          ${errorSummary}
+          ${jobSummary}
+        `;
+      } catch (err) {
+        adminEl.innerHTML = `<span style="color:#ef4444;">Metrics fetch failed:</span> ${err}`;
+      }
+    }
+
+    function renderOpsPanel() {
+      opsEl.innerHTML = `
+        <div><strong>Operations</strong></div>
+        <div style="margin-top:4px; display:flex; flex-wrap:wrap; gap:6px; align-items:center;">
+          <button id="btn-rebuild-index">Rebuild search index</button>
+          <button id="btn-discovery-topup">Discovery (new)</button>
+          <span style="font-size:13px;color:#94a3b8;">Backfill window:</span>
+          <select id="backfill-window" style="padding:6px 8px;border-radius:8px;border:1px solid #1e293b;background:#020617;color:#e2e8f0;font-size:13px;">
+            <option value="1">1 day</option>
+            <option value="3">3 days</option>
+            <option value="7">7 days</option>
+          </select>
+          <button id="btn-discovery-backfill-run">Run backfill</button>
+          <button id="btn-prefetch-now">Prefetch now</button>
+        </div>
+        <div id="ops-status" class="desc" style="margin-top:6px;">Use these controls for small, bounded maintenance operations. Heavy ingest/backfill remains CLI-only.</div>
+      `;
+
+      const opsStatus = document.getElementById("ops-status");
+
+      async function callAdminOp(path, payload, label) {
+        opsStatus.textContent = `${label}…`;
+        try {
+          const resp = await fetch(`${apiBase}${path}`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: payload ? JSON.stringify(payload) : "{}",
+          });
+          const data = await resp.json().catch(() => ({}));
+          if (!resp.ok || data.status === "error") {
+            opsStatus.textContent = `${label} failed: ${data.detail || resp.statusText}`;
+            return;
+          }
+          opsStatus.textContent = data.detail || `${label} completed; check Metrics panel for updated values.`;
+          loadAdmin();
+        } catch (err) {
+          opsStatus.textContent = `${label} failed: ${err}`;
+        }
+      }
+
+      document.getElementById("btn-rebuild-index").onclick = () =>
+        callAdminOp("/admin/rebuild_index", null, "Rebuild search index");
+      document.getElementById("btn-discovery-topup").onclick = () =>
+        callAdminOp("/admin/run_discovery", { mode: "topup" }, "Discovery (new)");
+      document.getElementById("btn-discovery-backfill-run").onclick = () => {
+        const sel = document.getElementById("backfill-window");
+        const days = parseInt(sel.value, 10);
+        if (!days) {
+          opsStatus.textContent = "Choose a backfill window (1, 3, or 7 days).";
+          return;
+        }
+        callAdminOp(
+          "/admin/run_discovery",
+          { mode: "backfill", window_days: days },
+          `Discovery backfill ${days}d`
+        );
+      };
+      document.getElementById("btn-prefetch-now").onclick = () =>
+        callAdminOp("/admin/run_prefetch", { limit: 100 }, "Prefetch");
+    }
+
+    function renderHit(hit) {
+      const card = document.createElement("div");
+      card.className = "card";
+      const title = document.createElement("div");
+      title.className = "title";
+      title.textContent = hit.title || hit.id;
+      title.title = hit.id;
+      const badge = document.createElement("span");
+      badge.className = "badge state-cold";
+      badge.textContent = "cold";
+      const desc = document.createElement("div");
+      desc.className = "desc";
+      const readmeSnippet = hit.readme_text
+        ? (hit.readme_text.length > 200 ? hit.readme_text.slice(0, 200) + "…" : hit.readme_text)
+        : null;
+      desc.textContent = hit.description || readmeSnippet || "No description";
+      const btn = document.createElement("button");
+      btn.textContent = "Resolve schema";
+      const schemaBox = document.createElement("div");
+      schemaBox.className = "schema";
+      schemaBox.style.display = "none";
+      const toggle = document.createElement("div");
+      toggle.className = "desc";
+      toggle.style.cursor = "pointer";
+      toggle.style.fontSize = "12px";
+      toggle.style.color = "#7dd3fc";
+      toggle.textContent = "Show schema";
+      toggle.style.display = "none";
+
+      btn.addEventListener("click", async () => {
+        badge.className = "badge state-resolving";
+        badge.textContent = "resolving";
+        btn.disabled = true;
+        try {
+          // If search already knows there is a cached schema, try to fetch it
+          // directly first to avoid enqueuing a duplicate job.
+          if (hit.has_schema) {
+            const cached = await fetchArtifact(hit.id);
+            if (cached) {
+              showSchema(cached, badge, btn, schemaBox, toggle);
+              return;
+            }
+          }
+          const jobResp = await fetch(`${apiBase}/request_resolve`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ id: hit.id, kind: "schema" })
+          });
+          if (!jobResp.ok) {
+            const msg = await jobResp.json().catch(() => ({}));
+            badge.className = "badge state-error";
+            badge.textContent = `blocked${msg.detail?.reason_code ? ` (${msg.detail.reason_code})` : ""}`;
+            btn.disabled = false;
+            return;
+          }
+          const jobData = await jobResp.json();
+          if (jobData.job_id && jobData.job_id.startsWith("cached")) {
+            const artifact = await fetchArtifact(hit.id);
+            showSchema(artifact, badge, btn, schemaBox, toggle);
+            return;
+          }
+          pollArtifact(hit.id, badge, btn, schemaBox, toggle);
+        } catch (err) {
+          badge.className = "badge state-error";
+          badge.textContent = "error";
+          btn.disabled = false;
+        }
+      });
+
+      const headerRow = document.createElement("div");
+      headerRow.className = "row";
+      headerRow.appendChild(title);
+      headerRow.appendChild(badge);
+
+      const facets = document.createElement("div");
+      facets.className = "desc";
+      const tags = (hit.tags || []).slice(0, 3).join(", ");
+      const langs = (hit.languages || []).join(", ");
+      const info = [];
+      if (hit.license_class) info.push(`License: ${hit.license_class}`);
+      if (hit.access_class) info.push(`Access: ${hit.access_class}`);
+      if (langs) info.push(`Lang: ${langs}`);
+      if (tags) info.push(`Tags: ${tags}`);
+      if (hit.downloads) info.push(`Downloads: ${hit.downloads}`);
+      if (hit.likes) info.push(`Likes: ${hit.likes}`);
+      facets.textContent = info.join(" • ");
+
+      const whyRow = document.createElement("div");
+      whyRow.className = "desc";
+      if (hit.why && hit.why.length) {
+        whyRow.textContent = "Why: " + hit.why.join(", ");
+      }
+
+      card.appendChild(headerRow);
+      card.appendChild(facets);
+      card.appendChild(whyRow);
+      card.appendChild(desc);
+      card.appendChild(btn);
+      card.appendChild(schemaBox);
+      toggle.addEventListener("click", () => {
+        if (schemaBox.style.display === "none") {
+          schemaBox.style.display = "block";
+          toggle.textContent = "Hide schema";
+        } else {
+          schemaBox.style.display = "none";
+          toggle.textContent = "Show schema";
+        }
+      });
+      card.appendChild(toggle);
+      resultsEl.appendChild(card);
+    }
+
+    async function fetchArtifact(id) {
+      const resp = await fetch(`${apiBase}/get_artifact?id=${encodeURIComponent(id)}&kind=schema`);
+      if (!resp.ok) return null;
+      return resp.json();
+    }
+
+    function showSchema(artifact, badge, btn, schemaBox, toggle) {
+      if (!artifact) {
+        if (badge) { badge.className = "badge state-error"; badge.textContent = "not ready"; }
+        if (btn) btn.disabled = false;
+        return;
+      }
+      if (badge) { badge.className = "badge state-ready"; badge.textContent = "ready"; }
+      if (btn) btn.disabled = false;
+      if (schemaBox) {
+        schemaBox.style.display = "block";
+        schemaBox.textContent = JSON.stringify(artifact.payload.schema || artifact.payload, null, 2);
+      }
+      if (toggle) {
+        toggle.style.display = "block";
+        toggle.textContent = "Hide schema";
+      }
+    }
+
+    async function pollArtifact(id, badge, btn, schemaBox, toggle) {
+      let attempts = 0;
+      const maxAttempts = 30; // ~15s at 500ms
+      while (attempts < maxAttempts) {
+        const art = await fetchArtifact(id);
+        if (art) {
+          showSchema(art, badge, btn, schemaBox, toggle);
+          return;
+        }
+        await new Promise((r) => setTimeout(r, 500));
+        attempts++;
+      }
+      if (badge) { badge.className = "badge state-error"; badge.textContent = "timeout"; }
+      if (btn) btn.disabled = false;
+    }
+
+    renderOpsPanel();
+    search();
+  </script>
+</body>
+</html>
