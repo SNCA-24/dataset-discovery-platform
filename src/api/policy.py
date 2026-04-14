@@ -2,8 +2,8 @@ from __future__ import annotations
 
 from typing import Optional
 
-from V2.config import Settings
-from V2.storage import Dataset
+from src.config import Settings
+from src.storage import Dataset
 
 
 SIZE_ORDER = [

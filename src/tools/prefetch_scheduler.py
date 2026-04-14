@@ -4,7 +4,7 @@ Nightly prefetch scheduler (Module E helper).
 Runs prefetch at a fixed interval (default 24h) or once immediately.
 
 Usage:
-  HF_TOKEN=<token> python -m V2.tools.prefetch_scheduler --duckdb-path data/discovery.duckdb --limit 100 --every-hours 24
+  HF_TOKEN=<token> python -m src.tools.prefetch_scheduler --duckdb-path data/discovery.duckdb --limit 100 --every-hours 24
 """
 
 from __future__ import annotations
@@ -12,7 +12,7 @@ from __future__ import annotations
 import argparse
 import time
 
-from V2.tools.prefetch import prefetch
+from src.tools.prefetch import prefetch
 
 
 def main() -> None:

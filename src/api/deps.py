@@ -2,8 +2,8 @@ from functools import lru_cache
 
 from fastapi import Depends
 
-from V2.config import Settings, load_settings
-from V2.storage import DuckDBStorage, PostgresStorage, StorageAdapter
+from src.config import Settings, load_settings
+from src.storage import DuckDBStorage, PostgresStorage, StorageAdapter
 
 
 @lru_cache

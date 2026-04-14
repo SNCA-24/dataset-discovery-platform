@@ -7,7 +7,7 @@ from scripts.demo_data import build_demo_db
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Create a small local demo DB for V2.")
+    parser = argparse.ArgumentParser(description="Create a small local demo DB for the dataset discovery app.")
     parser.add_argument(
         "--db-path",
         default="data/demo_discovery.duckdb",

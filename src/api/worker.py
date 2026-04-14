@@ -6,9 +6,9 @@ from datetime import datetime
 
 import httpx
 
-from V2.config import Settings
-from V2.connectors import Connector
-from V2.storage import Artifact, StorageAdapter
+from src.config import Settings
+from src.connectors import Connector
+from src.storage import Artifact, StorageAdapter
 
 logger = logging.getLogger(__name__)
 

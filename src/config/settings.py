@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 
 @dataclass
 class Settings:
-    """Runtime configuration for V2 services."""
+    """Runtime configuration for the dataset discovery services."""
 
     storage_backend: str = "duckdb"  # duckdb | postgres
     duckdb_path: str = os.path.join("data", "discovery.duckdb")

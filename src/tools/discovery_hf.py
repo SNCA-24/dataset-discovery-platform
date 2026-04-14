@@ -7,7 +7,7 @@ the `connectors` table under source='hf' as
 {"max_seen": {"lastModified": ..., "id": ...}}.
 
 Usage:
-  python -m V2.tools.discovery_hf --duckdb-path data/discovery.duckdb --limit 1000 --qps 1.0 [--backfill-until 2024-01-01T00:00:00Z]
+  python -m src.tools.discovery_hf --duckdb-path data/discovery.duckdb --limit 1000 --qps 1.0 [--backfill-until 2024-01-01T00:00:00Z]
 """
 
 from __future__ import annotations
@@ -20,8 +20,8 @@ from typing import Dict, Optional, Tuple
 
 from huggingface_hub import HfApi
 
-from V2.storage import Dataset, DuckDBStorage
-from V2.tools.common import compute_fingerprint, readme_stats
+from src.storage import Dataset, DuckDBStorage
+from src.tools.common import compute_fingerprint, readme_stats
 
 
 def parse_lm(lm: Optional[str]) -> Optional[datetime]:

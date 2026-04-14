@@ -4,14 +4,14 @@ from typing import Optional
 
 from fastapi import APIRouter, Depends, HTTPException, status
 
-from V2.api import schemas
-from V2.api.deps import get_settings, get_storage
-from V2.api.policy import evaluate_policy
-from V2.config import Settings
-from V2.storage import Job, StorageAdapter
-from V2.storage.duckdb_backend import DuckDBStorage
-from V2.tools.prefetch import should_pause
-from V2.tools.discovery_hf import discover
+from src.api import schemas
+from src.api.deps import get_settings, get_storage
+from src.api.policy import evaluate_policy
+from src.config import Settings
+from src.storage import Job, StorageAdapter
+from src.storage.duckdb_backend import DuckDBStorage
+from src.tools.prefetch import should_pause
+from src.tools.discovery_hf import discover
 
 router = APIRouter(prefix="/v2")
 

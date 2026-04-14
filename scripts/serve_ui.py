@@ -8,10 +8,10 @@ from pathlib import Path
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Serve the static V2 UI.")
+    parser = argparse.ArgumentParser(description="Serve the static dataset discovery UI.")
     parser.add_argument("--host", default="127.0.0.1")
     parser.add_argument("--port", type=int, default=8080)
-    parser.add_argument("--directory", default="V2/ui")
+    parser.add_argument("--directory", default="src/ui")
     args = parser.parse_args()
 
     directory = str(Path(args.directory).resolve())

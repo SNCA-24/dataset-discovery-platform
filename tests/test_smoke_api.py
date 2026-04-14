@@ -21,11 +21,11 @@ def _create_client(tmp_path: Path) -> TestClient:
     os.environ["STORAGE_BACKEND"] = "duckdb"
     os.environ["PREFETCH_ENABLED"] = "true"
 
-    from V2.api.deps import _get_settings_cached
+    from src.api.deps import _get_settings_cached
 
     _get_settings_cached.cache_clear()
 
-    from V2.api.main import create_app
+    from src.api.main import create_app
 
     return TestClient(create_app())
 

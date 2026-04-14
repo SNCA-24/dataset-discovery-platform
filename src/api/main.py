@@ -3,11 +3,11 @@ import logging
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from V2.api.routes import router
-from V2.config import load_settings
-from V2.api.worker import Worker
-from V2.connectors import HFConnector, OfflineStubConnector
-from V2.storage import DuckDBStorage
+from src.api.routes import router
+from src.config import load_settings
+from src.api.worker import Worker
+from src.connectors import HFConnector, OfflineStubConnector
+from src.storage import DuckDBStorage
 
 logger = logging.getLogger(__name__)
 

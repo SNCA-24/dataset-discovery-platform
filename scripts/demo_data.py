@@ -4,7 +4,7 @@ import json
 from datetime import datetime, timezone
 from pathlib import Path
 
-from V2.storage import Artifact, Dataset, DuckDBStorage
+from src.storage import Artifact, Dataset, DuckDBStorage
 
 
 def _now_utc() -> datetime:

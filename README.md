@@ -2,10 +2,10 @@
 
 Seeded-demo dataset discovery system with a DuckDB catalog, FastAPI backend, background worker, and static browser UI.
 
-This public repository is the V2 demo surface only. The supported path is a local seeded demo that you can run from this checkout without relying on private infrastructure.
+This public repository is the standalone public demo surface. The supported path is a local seeded demo that you can run from this checkout without relying on private infrastructure.
 
 - Search and inspect a small dataset catalog backed by DuckDB.
-- Exercise the same API and worker boundaries used by the broader V2 codebase.
+- Exercise the same API and worker boundaries used by the application codebase.
 - Reproduce the demo locally with root-level scripts, smoke tests, and CI.
 
 ## Why it matters
@@ -31,10 +31,10 @@ An optional Hugging Face-backed sync path still exists in code, but it is not th
 ## Architecture / flow
 
 1. `tests/fixtures/demo_catalog.json` seeds a local DuckDB file.
-2. `V2/storage/duckdb_backend.py` stores datasets, artifacts, jobs, and search state.
-3. `V2/api/main.py` starts the FastAPI app, CORS layer, and background worker.
-4. `V2/api/routes.py` exposes `/v2/healthz`, `/v2/search_index`, `/v2/get_artifact`, `/v2/request_resolve`, and `/v2/admin`.
-5. `V2/ui/index.html` calls the API and renders the seeded discovery experience in the browser.
+2. `src/storage/duckdb_backend.py` stores datasets, artifacts, jobs, and search state.
+3. `src/api/main.py` starts the FastAPI app, CORS layer, and background worker.
+4. `src/api/routes.py` exposes `/v2/healthz`, `/v2/search_index`, `/v2/get_artifact`, `/v2/request_resolve`, and `/v2/admin`.
+5. `src/ui/index.html` calls the API and renders the seeded discovery experience in the browser.
 
 ## Tech stack
 
@@ -145,12 +145,12 @@ Filtered seeded search using the size-class control.
 ├── scripts/
 ├── tests/
 ├── data/
-└── V2/
+└── src/
 ```
 
 Key areas:
 
-- `V2/`: application code for storage, API, worker, optional connectors, and the UI
+- `src/`: application code for storage, API, worker, optional connectors, and the UI
 - `assets/screenshots/`: seeded-demo UI screenshots used in this public README
 - `scripts/`: repo-root commands for demo DB creation, API run, UI serve, and smoke tests
 - `tests/`: smoke coverage and seeded fixture data
@@ -170,3 +170,7 @@ Key areas:
 - replace deprecated FastAPI lifecycle hooks and naive UTC timestamps
 - package the local demo flow into a single helper command
 - expand the optional external sync path only after the public demo remains reproducible
+
+## License
+
+MIT. See `LICENSE`.

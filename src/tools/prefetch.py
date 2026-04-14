@@ -5,7 +5,7 @@ Respects the runtime auto-pause checks and skips enqueueing when resolve p95
 or queue depth exceed thresholds.
 
 Usage:
-  HF_TOKEN=<token> python -m V2.tools.prefetch --duckdb-path data/discovery.duckdb --limit 100
+  HF_TOKEN=<token> python -m src.tools.prefetch --duckdb-path data/discovery.duckdb --limit 100
 """
 
 from __future__ import annotations
@@ -13,9 +13,9 @@ from __future__ import annotations
 import argparse
 from datetime import datetime
 
-from V2.config import load_settings
-from V2.storage import Job
-from V2.storage.duckdb_backend import DuckDBStorage
+from src.config import load_settings
+from src.storage import Job
+from src.storage.duckdb_backend import DuckDBStorage
 
 
 def should_pause(metrics: dict, settings) -> tuple[bool, str | None]:
