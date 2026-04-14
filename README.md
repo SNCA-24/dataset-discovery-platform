@@ -36,6 +36,8 @@ An optional Hugging Face-backed sync path still exists in code, but it is not th
 4. `src/api/routes.py` exposes `/v2/healthz`, `/v2/search_index`, `/v2/get_artifact`, `/v2/request_resolve`, and `/v2/admin`.
 5. `src/ui/index.html` calls the API and renders the seeded discovery experience in the browser.
 
+The source tree now uses `src/`, while the HTTP API remains versioned under `/v2/*` to preserve the current demo contract.
+
 ## Tech stack
 
 - Python 3.12
