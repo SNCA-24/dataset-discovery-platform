@@ -287,14 +287,30 @@ This project should be read as a public portfolio/demo surface, not as a claim t
 
 ## Skills Demonstrated
 
-- backend API design with FastAPI and Pydantic
-- data modeling and local analytical storage with DuckDB
-- search implementation with FTS/fallback matching
-- background job orchestration and artifact lifecycle handling
-- policy-based request gating and admin metrics
-- fixture-driven reproducibility and smoke testing
-- CI setup for repeatable validation
-- product-minded scoping: honest demo boundaries, operational endpoints, and a usable UI surface
+### Backend / API Engineering
+- FastAPI route design with Pydantic request and response schemas
+- versioned API surface for search, artifact retrieval, policy checks, and admin metrics
+- background worker pattern for asynchronous artifact resolution
+
+### Data / Storage Systems
+- DuckDB-backed local catalog storage
+- relational modeling for datasets, artifacts, jobs, events, signals, and search documents
+- fixture-driven demo database generation for reproducible local runs
+
+### Search / Discovery
+- metadata and README-text search over dataset records
+- DuckDB FTS path with LIKE-based fallback matching
+- filterable discovery experience across license, modality, language, and size-class metadata
+
+### Reliability / Reproducibility
+- smoke tests for API startup, health checks, search, admin metrics, and cached artifact resolution
+- GitHub Actions CI for the supported seeded demo path
+- clear separation between supported local demo flow and optional external Hugging Face-backed paths
+
+### Product / System Design
+- scoped public demo surface with honest claim boundaries
+- lightweight static UI for search, filtering, metrics, and schema preview
+- operational endpoints and admin metrics that make system behavior inspectable
 
 ## License
 
