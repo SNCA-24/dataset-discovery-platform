@@ -37,3 +37,7 @@ data/**/*.json
 **/.env
 .env.local
 .env.*.local
+career_os_evidence_draft.md
+
+# Docs
+docs/github_readme_standard.md
